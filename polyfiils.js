@@ -55,6 +55,11 @@ function reduceCallback(acc, cur) {
 
 Array.prototype.myReduce = function (reduceCallback, initialValue) {
   // Polyfill function of reduce
+
+  if (typeof reduceCallback !== "function") {
+    throw new Error("Callback is not a function");
+  }
+
   let acc = initialValue ? initialValue : this[0];
 
   for (let i = initialValue ? 0 : 1; i < this.length; i++) {
@@ -64,5 +69,31 @@ Array.prototype.myReduce = function (reduceCallback, initialValue) {
   return acc;
 };
 
-const reducePolyfill = arr3.myReduce(reduceCallback); // Driver code
+const reducePolyfill = arr3.myReduce(reduceCallback, 8); // Driver code
 console.log(reducePolyfill);
+
+/** 2.  Polyfill of Flatten **/
+
+// Flatten an array means an array without any sub arrays or nested arrays
+
+const arr4 = [1, 2, 3, 4, [5, 6], [[7, 8]]];
+
+Array.prototype.myFlat = function (depth = 1) {
+  let tempArr = [];
+
+  function getFlattenArray(array, depth) {
+    for (element of array) {
+      if (Array.isArray(element) && depth) {
+        getFlattenArray(element, depth - 1);
+      } else {
+        tempArr.push(element);
+      }
+    }
+  }
+
+  getFlattenArray(this, depth);
+  return tempArr;
+};
+
+const flattenArray = arr4.myFlat(2);
+console.log("flattenArray is ", flattenArray);
