@@ -44,7 +44,7 @@ const result = arr2.myFilter((number) => {
 
 console.log(result);
 
-/** 2.  Polyfill of Reduce **/
+/** 3.  Polyfill of Reduce **/
 
 const arr3 = [1, 2, 3, 4, 5, 6]; // array
 
@@ -72,7 +72,7 @@ Array.prototype.myReduce = function (reduceCallback, initialValue) {
 const reducePolyfill = arr3.myReduce(reduceCallback, 8); // Driver code
 console.log(reducePolyfill);
 
-/** 2.  Polyfill of Flatten **/
+/** 4.  Polyfill of Flatten **/
 
 // Flatten an array means an array without any sub arrays or nested arrays
 
@@ -97,3 +97,61 @@ Array.prototype.myFlat = function (depth = 1) {
 
 const flattenArray = arr4.myFlat(2);
 console.log("flattenArray is ", flattenArray);
+
+/** 5.  Polyfill of Call and Apply  **/
+
+let obj = {
+  name: "Sourav",
+  city: "Chandigarh",
+};
+
+function displayUserInfo(state) {
+  console.log(`Hi I am ${this.name} from ${this.city}, ${state}`);
+}
+
+// Polyfill of Call
+Function.prototype.myCall = function (context, ...args) {
+  if (typeof context !== "object") {
+    throw new Error("Context should be Object");
+  } else if (typeof this !== "function") {
+    throw new Error("this should be function");
+  } else {
+    context.showMessage = this;
+    context.showMessage(...args);
+    delete context.showMessage;
+  }
+};
+
+// Polyfill Of Apply
+Function.prototype.myApply = function (context, args) {
+  context.showMessage = this;
+  context.showMessage(args);
+  delete context.showMessage;
+};
+
+displayUserInfo.myCall(obj, "Union Teritory"); // calling Polyfill of call
+displayUserInfo.myApply(obj, ["Union Teritory"]); // calling Polyfill of apply
+console.log(obj);
+
+/** 6.  Polyfill of Bind  **/
+
+let bindObj = {
+  name: "Sourav",
+  city: "Chandigarh",
+};
+
+function displayUserInfoBind(state) {
+  console.log(`Hi I am ${this.name} from ${this.city}, ${state}`);
+}
+
+Function.prototype.myBind = function (context, ...args) {
+  context.wrapperFunc = this;
+
+  return function (...rest) {
+    context.wrapperFunc(...args, ...rest);
+    delete context.wrapperFunc;
+  };
+};
+
+const bindFunc = displayUserInfoBind.myBind(obj);
+bindFunc("Union Terittory");
