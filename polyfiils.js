@@ -22,7 +22,6 @@ const squaredArr = arr.myMap(callback);
 console.log(squaredArr);
 
 /** 2.  Polyfill of filter **/
-
 const arr2 = [1, 2, 3, 4, 5, 6];
 
 // Prototype
@@ -44,3 +43,26 @@ const result = arr2.myFilter((number) => {
 });
 
 console.log(result);
+
+/** 2.  Polyfill of Reduce **/
+
+const arr3 = [1, 2, 3, 4, 5, 6]; // array
+
+function reduceCallback(acc, cur) {
+  // callback function for reduce polyfill
+  return acc + cur;
+}
+
+Array.prototype.myReduce = function (reduceCallback, initialValue) {
+  // Polyfill function of reduce
+  let acc = initialValue ? initialValue : this[0];
+
+  for (let i = initialValue ? 0 : 1; i < this.length; i++) {
+    acc = reduceCallback.call(this, acc, this[i], i, this);
+  }
+
+  return acc;
+};
+
+const reducePolyfill = arr3.myReduce(reduceCallback); // Driver code
+console.log(reducePolyfill);
